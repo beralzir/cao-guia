@@ -27,7 +27,7 @@ Ativar automaticamente quando o domínio for `.gov.br` (ou o usuário sinalizar 
 - Censo IBGE 2022 (divulgação amostra, mai/2025): **14,4 mi de pessoas com deficiência** (7,3% da população 2+); dificuldade de enxergar é a mais comum, **~7,9 mi**.
 - Réguas não-somáveis (anéis concêntricos, nunca somar): 7,9 mi funcional (IBGE) ≠ ~1,5 mi cegos + ~6 mi baixa visão (clínico CBO/OMS) ≠ 144 mi com problema de visão corrigível (TAM óptico ABIÓPTICA).
 - Daltonismo: **~8% dos homens e ~0,5% das mulheres** (estimativa OMS; não há dado oficial IBGE). Deuteranomalia é o tipo mais comum.
-- Analfabetismo entre PcD: 21,3% (4× a taxa de quem não tem deficiência) — reforça linguagem clara e voz, embora "linguagem simples" esteja fora do escopo V1 (registrar como nota quando relevante).
+- Analfabetismo entre PcD: 21,3% (4× a taxa de quem não tem deficiência), reforça linguagem clara e voz, embora "linguagem simples" esteja fora do escopo V1 (registrar como nota quando relevante).
 - Benchmark nacional: só **2,9% dos sites brasileiros** passaram em todos os testes automáticos (BigDataCorp + Movimento Web para Todos, edição 2024). Bom para calibrar expectativa e dar peso ao relatório.
 
 ## Validade dos fatos

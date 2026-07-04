@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""office_audit.py — checagens de acessibilidade em docx/pptx/xlsx.
+"""office_audit.py: checagens de acessibilidade em docx/pptx/xlsx.
 
 O checker do MS Office não tem CLI nem API: as regras são públicas, o motor é
 preso à GUI. Este script reimplementa o subconjunto verificável por máquina

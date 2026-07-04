@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""cor.py — pipeline de cor do cão-guia (Python puro, sem dependências).
+"""cor.py: pipeline de cor do cão-guia (Python puro, sem dependências).
 
 Faz três coisas:
   contraste  razão de contraste WCAG 2.x entre duas cores + vereditos AA/AAA/UI
@@ -188,7 +188,7 @@ def cmd_paleta(args):
     if as_json:
         print(json.dumps(resultado, ensure_ascii=False, indent=2))
         return
-    print(f"paleta ({len(cores)} cores) — veredito: {resultado['veredito']}")
+    print(f"paleta ({len(cores)} cores), veredito: {resultado['veredito']}")
     print(f"thresholds declarados: colisão ΔE<{DELTA_E_COLISAO}, "
           f"alerta ΔE<{DELTA_E_ALERTA} (CIE76; decisão da skill, sem padrão de mercado)")
     for cenario, pares in resultado["simulacoes"].items():

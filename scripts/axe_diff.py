@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""axe_diff.py — diff de auditorias axe-core (baseline vs. pós-fix).
+"""axe_diff.py: diff de auditorias axe-core (baseline vs. pós-fix).
 
 Fecha o loop de correção do cão-guia: todo fix aplicado precisa de prova de
 que resolveu a violação sem criar violação nova. Compara dois JSON do

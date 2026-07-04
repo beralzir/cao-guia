@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""preflight.py — inventário de dependências do cão-guia com degradação declarada.
+"""preflight.py: inventário de dependências do cão-guia com degradação declarada.
 
 A skill tem um núcleo leve (npx + Python puro) e extras opcionais. Este script
 diz o que a máquina atual cobre e o que fica de fora. A regra da skill: nunca
