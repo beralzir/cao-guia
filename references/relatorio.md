@@ -7,9 +7,9 @@ Formato default: **HTML single-file acessível, PT-BR**, gerado a partir de `ass
 ## Estrutura fixa
 
 1. **Resumo executivo**: veredito geral, 3-5 achados mais graves, o número de contexto BR (2,9% dos sites brasileiros passam nos testes automáticos) quando fizer sentido.
-2. **Escopo e cobertura** (obrigatória, é a seção da honestidade): o que foi auditado (URLs/arquivos/estados), motores rodados e versões, capacidades degradadas do preflight, e a declaração fixa: *"Varredura automática cobre ~30-40% dos critérios WCAG (~57% do volume de issues). Os demais exigem verificação humana; o status de cada um está na seção de checklist manual."*
+2. **Escopo e cobertura** (obrigatória, é a seção da honestidade): o que foi auditado (URLs/arquivos/estados), motores rodados e versões, capacidades degradadas do preflight, e a declaração fixa (números canônicos em `motores.md`; atualizar lá primeiro): *"Varredura automática cobre ~30-40% dos critérios WCAG (~57% do volume de issues). Os demais exigem verificação humana; o status de cada um está na seção de checklist manual."*
 3. **Achados**, agrupados por causa-raiz (não por página: 200 nós violando a mesma regra = 1 achado com contagem). Cada achado: severidade (crítico/sério/moderado/menor) · critério WCAG 2.2 (número + nome pt-BR + nível) · requisito NBR 17225 correspondente (mapeamento autoral, marcado requisito/recomendação) · localização (seletor/arquivo/slide/página) · **proveniência** · fix sugerido (código quando couber).
-4. **Checklist manual**: os 15 itens de `checklist-manual.md`, cada um com passou / reprovou / não verificado (motivo).
+4. **Checklist manual**: todos os itens de `checklist-manual.md`, cada um com passou / reprovou / não verificado (motivo).
 5. **Seção normativa BR**: o tripé de `normas-br.md` (+ ramo gov quando aplicável).
 6. **Plano de correção priorizado**: quick wins → estruturais, com esforço estimado.
 7. **Rodapé**: disclaimer + datas + versões.
