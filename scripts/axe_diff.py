@@ -6,9 +6,9 @@ que resolveu a violação sem criar violação nova. Compara dois JSON do
 @axe-core/cli (ou de axe.run()) e reporta corrigidas / novas / persistentes.
 
 Uso:
-  npx @axe-core/cli <url-ou-arquivo> --save baseline.json
+  npx @axe-core/cli@4.12.1 <url-ou-arquivo> --save baseline.json
   # ... aplica os fixes aprovados ...
-  npx @axe-core/cli <url-ou-arquivo> --save depois.json
+  npx @axe-core/cli@4.12.1 <url-ou-arquivo> --save depois.json
   python3 axe_diff.py baseline.json depois.json [--json]
 
 Sai com código 2 se houver violação NOVA (fix criou problema), 0 caso contrário.

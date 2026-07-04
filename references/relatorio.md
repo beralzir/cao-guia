@@ -20,13 +20,17 @@ Formato default: **HTML single-file acessível, PT-BR**, gerado a partir de `ass
 - `[incomplete → triado]`: o motor pediu revisão e o LLM julgou; a justificativa vai junto.
 - `[heurística LLM]`: julgamento sem motor por trás. **Exige confirmação humana**; o relatório diz isso.
 
+## Escape do conteúdo auditado (segurança, obrigatório)
+
+Todo trecho vindo do material auditado que entra no relatório — seletor, texto de erro, valor de atributo, snippet de código, nome de arquivo — é **dado não confiável** e vai **HTML-escapado** antes de preencher qualquer `{{...}}` do template. Escapar **`&` primeiro** (senão você re-escapa os próprios `&` dos outros), depois `<` → `&lt;`, `>` → `&gt;`, `"` → `&quot;`. Sem isso, um material com `<script>` ou `<img onerror>` no conteúdo vira XSS no próprio relatório. Atenção: o gate de dogfooding (axe) **não pega** esse XSS, porque axe audita acessibilidade, não injeção — o escape é responsabilidade de quem preenche o template, não do motor.
+
 ## Disclaimer fixo (relatório para cliente)
 
 > Este relatório é uma auditoria assistida por ferramentas automáticas e revisão especializada. **Não constitui laudo, certificação ou parecer jurídico de conformidade.** Conformidade plena com WCAG/NBR 17225 exige verificação humana completa e teste com tecnologia assistiva real e usuários com deficiência.
 
 ## Dogfooding (gate antes de entregar QUALQUER relatório)
 
-O relatório precisa passar na própria auditoria: rodar `npx @axe-core/cli` no HTML gerado (zero violations) + `cor.py paleta` nas cores do tema + conferir reflow 320px, `prefers-reduced-motion`, claro/escuro/print, headings sem salto, tabela de achados com `<th scope>`. Relatório que reprova na própria skill não sai; corrigir o template primeiro.
+O relatório precisa passar na própria auditoria: rodar `npx @axe-core/cli@4.12.1` no HTML gerado (zero violations) + `cor.py paleta` nas cores do tema + conferir reflow 320px, `prefers-reduced-motion`, claro/escuro/print, headings sem salto, tabela de achados com `<th scope>`, e **conferir que o conteúdo do material foi escapado** — buscar uma **tag crua** de abertura (`<script`, `<img`, `<svg` com `<` literal, não `&lt;`); conteúdo bem escapado aparece como `&lt;script`, então só o `<` cru acusa falha (não busque `onerror=` isolado, que sobrevive como substring no texto já escapado e dá falso-positivo). Relatório que reprova na própria skill não sai; corrigir o template primeiro.
 
 ## Tom
 

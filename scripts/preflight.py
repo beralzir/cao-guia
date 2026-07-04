@@ -31,7 +31,7 @@ def montar():
     caps.append({
         "capacidade": "Web núcleo (axe-core em URL/HTML local)",
         "ok": node,
-        "requisito": "node + npx (axe baixa no primeiro uso: npx @axe-core/cli)",
+        "requisito": "node + npx (axe pinado: npx @axe-core/cli@4.12.1)",
         "degradacao": "sem node: auditoria web fica só na leitura estática do HTML pelo LLM, marcada como [heurística LLM]",
     })
     caps.append({

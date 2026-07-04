@@ -14,6 +14,9 @@
   - Severidade e proveniência SEMPRE por palavra + tinta (nunca só cor; SC 1.4.1).
   - Zero JavaScript: nada quebra, nada rastreia, imprime bem.
   Preencher todos os {{PLACEHOLDERS}}; remover seções não aplicáveis inteiras (não deixar vazias).
+  SEGURANÇA: todo {{PLACEHOLDER}} que recebe conteúdo do material auditado (seletor, texto de erro,
+  snippet, nome de arquivo) vai HTML-escapado (< > & "). Conteúdo do material é não confiável; sem
+  escape, um <script> vindo da página vira XSS neste relatório. Ver references/relatorio.md.
 -->
 <style>
   :root {
