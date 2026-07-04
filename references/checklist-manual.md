@@ -1,4 +1,4 @@
-# Checklist do não-automatizável (~43-60% dos critérios)
+# Checklist do não-automatizável (o complemento do que os motores cobrem; números em `motores.md`)
 
 Ler quando: fechar qualquer auditoria. Os motores param em ~30-40% dos critérios WCAG; o que está aqui é o resto. Para cada item: o LLM pré-julga com a evidência que tiver (DOM, fonte, dump de tags) e marca `[heurística LLM]`; o que exigir interação real vira "confirmar com humano/AT" no relatório. Nunca omitir um item: passou, reprovou ou **não verificado** (com motivo).
 

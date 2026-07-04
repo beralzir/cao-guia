@@ -64,3 +64,5 @@ Ferramentas automáticas cobrem ~30-40% dos critérios WCAG (~57% do volume de i
 ## Privacidade
 
 Processamento 100% local: nenhum documento ou URL de cliente vai para API cloud de terceiros (nada de Adobe Auto-Tag e afins). Se um dia entrar rota cloud, é decisão explícita do usuário, nunca default.
+
+Pós-login: quem autentica é o usuário (sessão/storage state fornecido por ele). A skill nunca solicita, armazena ou registra credenciais em log, baseline ou relatório.

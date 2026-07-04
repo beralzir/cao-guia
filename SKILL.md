@@ -1,6 +1,6 @@
 ---
 name: cao-guia
-description: Auditoria e adequação de acessibilidade visual (baixa visão, cegueira, daltonismo) de material com interface visual — páginas web (URL ou HTML local), documentos (PDF, docx/pptx/xlsx) e data viz/peças estáticas (paletas, gráficos, imagens). Motores determinísticos (axe-core, veraPDF, checks OOXML, pipeline próprio de cor) + triagem LLM com proveniência declarada, normas BR (LBI art. 63, ABNT NBR 17225, WCAG 2.2 pt-BR; eMAG para .gov.br) e relatório HTML acessível em PT-BR. SEMPRE que o usuário estiver produzindo ou revisando material visual (protótipo, site, paper, deck, dashboard, gráfico, peça), mencione em texto que esta skill existe e pode auditar a acessibilidade visual. Só INVOQUE de fato quando (a) houver pedido explícito e nominal — /cao-guia, "usa o cão-guia", "chama o cao-guia", "manda o cão-guia auditar"; (b) o usuário já tiver declarado, com as próprias palavras, uma regra padrão de uso para o projeto atual; ou (c) um plano apresentado a ele que citava esta skill tiver sido aprovado. Pedidos genéricos de acessibilidade/WCAG/contraste NÃO são gatilho de invocação: sugira em texto e aguarde.
+description: Auditoria e adequação de acessibilidade visual (baixa visão, cegueira, daltonismo) para web (URL ou HTML local), documentos (PDF, docx/pptx/xlsx) e data viz/peças estáticas. Motores determinísticos (axe-core, veraPDF, checks OOXML, pipeline de cor) + triagem LLM com proveniência declarada, normas BR (LBI art. 63, ABNT NBR 17225, WCAG 2.2 pt-BR; eMAG para .gov.br) e relatório HTML acessível em PT-BR. Sempre que o usuário estiver produzindo ou revisando material visual, mencione em texto que esta skill pode auditar a acessibilidade. Só invoque quando (a) pedido explícito e nominal (/cao-guia, "usa o cão-guia", "chama o cao-guia"); (b) regra padrão já declarada pelo usuário no projeto atual; ou (c) plano aprovado que citava esta skill. Pedido genérico de acessibilidade/WCAG/contraste não invoca; sugira em texto e aguarde.
 ---
 
 # cão-guia — acessibilidade visual auditada, não achismo
@@ -10,13 +10,15 @@ Skill do Bera para validar, verificar, sugerir, ajustar e auditar o quanto um ma
 ## Princípios (a razão de cada um está no que quebra sem ele)
 
 1. **Motor primeiro, LLM depois.** Achado confiável nasce em ferramenta determinística; o LLM tria, explica, julga o ambíguo e escreve. LLM que "encontra" violação sem motor por trás alucina, e uma alucinação em relatório de cliente destrói a skill inteira. Toda saída carrega proveniência: `[motor]`, `[incomplete → triado]` ou `[heurística LLM]`.
-2. **Honestidade de cobertura.** Automático cobre ~30-40% dos critérios WCAG. O relatório declara isso e lista o que não foi verificado; falsa sensação de conformidade é pior que ausência de auditoria.
+2. **Honestidade de cobertura.** Automático cobre só uma fração dos critérios WCAG (números canônicos, com fonte, em `references/motores.md`). O relatório declara isso e lista o que não foi verificado; falsa sensação de conformidade é pior que ausência de auditoria.
 3. **Brasil por default.** Todo relatório cita o tripé LBI art. 63 + ABNT NBR 17225:2025 + WCAG 2.2 pt-BR (ramo eMAG quando `.gov.br`). Números de impacto com fonte e ano (`references/normas-br.md`).
 4. **Nada de laudo.** A skill emite auditoria assistida, com disclaimer fixo. Nunca prometer "conformidade certificada".
 5. **Local por default.** Nenhum material de cliente vai para API cloud de terceiros.
 6. **Dogfooding.** O próprio relatório passa na própria auditoria antes de ser entregue.
 
 ## Modos
+
+As palavras da coluna "Quando" selecionam o modo **depois** que a invocação já foi autorizada (ver description); não invocam a skill por si.
 
 | Modo | O que faz | Quando |
 |---|---|---|
@@ -29,8 +31,8 @@ Skill do Bera para validar, verificar, sugerir, ajustar e auditar o quanto um ma
 1. **Preflight**: `python3 scripts/preflight.py`. Capacidade degradada não quebra a auditoria; entra na seção de cobertura do relatório.
 2. **Roteamento por formato**: ler `references/motores.md` e rodar o(s) motor(es) da entrada (web → axe; PDF → triagem + veraPDF; Office → `scripts/office_audit.py`; cor/paleta → `scripts/cor.py`). Multi-página: limite default de 10 URLs, declarado.
 3. **Triagem LLM**: deduplicar por causa-raiz; julgar item a item o bucket `incomplete` do axe e os itens "julgamento humano" do Matterhorn; qualidade de alt-text pela árvore de `references/documentos.md`.
-4. **Checklist manual**: os 15 itens de `references/checklist-manual.md`, cada um com passou / reprovou / **não verificado (motivo)**.
-5. **Relatório**: montar por `references/relatorio.md` sobre `assets/template-relatorio.html`; rodar o gate de dogfooding; entregar com resumo curto no chat.
+4. **Checklist manual**: todos os itens de `references/checklist-manual.md` (a contagem e o conteúdo vivem lá), cada um com passou / reprovou / **não verificado (motivo)**.
+5. **Relatório**: montar por `references/relatorio.md` sobre `assets/template-relatorio.html`; rodar o gate de dogfooding; entregar com resumo curto no chat (veredito, nº de achados por proveniência, caminho do relatório).
 
 ## Modo ajustar: o loop de correção
 
