@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Auditoria de acessibilidade visual · {{ALVO}} · cão-guia</title>
+<!--
+  Template do relatório cão-guia.
+  Assunções de design (documentadas, ajustáveis):
+  - Fonte: Atkinson Hyperlegible se instalada (desenhada para baixa visão), senão system-ui.
+    Sem webfont externa: o relatório abre offline e não vaza requisição.
+  - Paleta derivada da Okabe-Ito (validar mudanças com scripts/cor.py antes de entregar).
+  - Severidade e proveniência SEMPRE por palavra + tinta (nunca só cor; SC 1.4.1).
+  - Zero JavaScript: nada quebra, nada rastreia, imprime bem.
+  Preencher todos os {{PLACEHOLDERS}}; remover seções não aplicáveis inteiras (não deixar vazias).
+-->
+<style>
+  :root {
+    --bg: #FAFAF7; --surface: #FFFFFF; --ink: #21211D; --muted: #50504A;
+    --border: #C9C9C0; --accent: #005A8E; --accent-ink: #FFFFFF;
+    --tint-motor: #DCEFE2; --tint-triado: #F5E9CB; --tint-llm: #E7E7E1;
+    --tint-critico: #F4D8CB; --tint-serio: #F5E9CB; --tint-ok: #DCEFE2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131311; --surface: #1D1D1A; --ink: #EAEAE2; --muted: #B7B7AC;
+      --border: #45453E; --accent: #6FBEEB; --accent-ink: #131311;
+      --tint-motor: #1E3A28; --tint-triado: #3F3212; --tint-llm: #2B2B27;
+      --tint-critico: #4A2313; --tint-serio: #3F3212; --tint-ok: #1E3A28;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 400 1.125rem/1.6 "Atkinson Hyperlegible", "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .pele { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  .pular {
+    position: absolute; left: -999px; top: 0; background: var(--accent);
+    color: var(--accent-ink); padding: .6rem 1rem; z-index: 10; text-decoration: none;
+  }
+  .pular:focus-visible { left: .5rem; top: .5rem; }
+  h1 { font-size: 1.7rem; line-height: 1.25; margin: 1.2rem 0 .3rem; }
+  h2 { font-size: 1.35rem; margin: 2.8rem 0 .8rem; padding-top: .8rem; border-top: 2px solid var(--border); }
+  h3 { font-size: 1.1rem; margin: 1.6rem 0 .4rem; }
+  p, li { max-width: 65ch; }
+  .meta { color: var(--muted); font-size: .95rem; margin: 0; }
+  .veredito {
+    display: inline-block; margin: 1rem 0 0; padding: .35rem .8rem; border: 2px solid var(--ink);
+    border-radius: .35rem; font-weight: 700; background: var(--surface);
+  }
+  nav[aria-label="Sumário"] ul { margin: .4rem 0 0; padding-left: 1.2rem; }
+  .cartao {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: .5rem; padding: 1rem 1.2rem; margin: 1rem 0;
+  }
+  .selo {
+    display: inline-block; font-size: .82rem; font-weight: 700; padding: .1rem .55rem;
+    border-radius: .3rem; border: 1px solid var(--border); color: var(--ink); white-space: nowrap;
+  }
+  .selo-motor { background: var(--tint-motor); }
+  .selo-triado { background: var(--tint-triado); }
+  .selo-llm { background: var(--tint-llm); border-style: dashed; }
+  .sev { font-weight: 700; padding: .1rem .55rem; border-radius: .3rem; border: 1px solid var(--border); }
+  .sev-critico { background: var(--tint-critico); }
+  .sev-serio { background: var(--tint-serio); }
+  .sev-moderado, .sev-menor { background: var(--tint-llm); }
+  .ok { background: var(--tint-ok); }
+  table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+  .rolagem { overflow-x: auto; }
+  th, td { border: 1px solid var(--border); padding: .5rem .7rem; text-align: left; vertical-align: top; }
+  th { background: var(--surface); }
+  caption { text-align: left; font-weight: 700; padding-bottom: .5rem; }
+  code, pre {
+    font-family: ui-monospace, "JetBrains Mono", Menlo, monospace; font-size: .92em;
+    background: var(--surface); border: 1px solid var(--border); border-radius: .3rem;
+  }
+  code { padding: .05rem .3rem; overflow-wrap: anywhere; }
+  pre { padding: .8rem; overflow-x: auto; }
+  footer { margin-top: 3rem; border-top: 2px solid var(--border); padding-top: 1rem; font-size: .95rem; color: var(--muted); }
+  @media print {
+    :root { --bg: #FFF; --surface: #FFF; --ink: #000; --muted: #333; --border: #999; --accent: #003B5C; }
+    .pular, nav[aria-label="Sumário"] { display: none; }
+    .cartao { break-inside: avoid; }
+    a::after { content: " (" attr(href) ")"; font-size: .85em; }
+    a[href^="#"]::after { content: ""; }
+  }
+</style>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<div class="pele">
+
+<header>
+  <p class="meta">cão-guia · auditoria de acessibilidade visual</p>
+  <h1>{{TITULO_DO_RELATORIO}}</h1>
+  <p class="meta">Alvo: {{ALVO_DESCRICAO}} · Data: {{DATA}} · Solicitante: {{SOLICITANTE}}</p>
+  <p class="veredito">Veredito geral: {{VEREDITO_GERAL}}</p>
+</header>
+
+<nav aria-label="Sumário">
+  <h2 id="sumario">Sumário</h2>
+  <ul>
+    <li><a href="#resumo">1. Resumo executivo</a></li>
+    <li><a href="#cobertura">2. Escopo e cobertura</a></li>
+    <li><a href="#achados">3. Achados</a></li>
+    <li><a href="#checklist">4. Checklist manual</a></li>
+    <li><a href="#normas">5. Base normativa (Brasil)</a></li>
+    <li><a href="#plano">6. Plano de correção priorizado</a></li>
+  </ul>
+</nav>
+
+<main id="conteudo">
+
+<section aria-labelledby="resumo">
+  <h2 id="resumo">1. Resumo executivo</h2>
+  <p>{{RESUMO_2_A_4_FRASES}}</p>
+  <ul>
+    <li>{{ACHADO_GRAVE_1}}</li>
+    <li>{{ACHADO_GRAVE_2}}</li>
+    <li>{{ACHADO_GRAVE_3}}</li>
+  </ul>
+  <p class="meta">Contexto: no benchmark nacional mais recente citado neste relatório, só 2,9% dos
+  sites brasileiros passaram em todos os testes automáticos de acessibilidade (BigDataCorp +
+  Movimento Web para Todos, 2024). {{FRASE_DE_CONTEXTO_OPCIONAL}}</p>
+</section>
+
+<section aria-labelledby="cobertura">
+  <h2 id="cobertura">2. Escopo e cobertura</h2>
+  <div class="cartao">
+    <p><strong>O que este relatório cobre e o que não cobre.</strong>
+    A varredura automática cobre cerca de 30 a 40% dos critérios WCAG (aprox. 57% do volume
+    típico de problemas). Os demais critérios exigem verificação humana; o status de cada um
+    está na seção <a href="#checklist">Checklist manual</a>.</p>
+  </div>
+  <h3>Auditado</h3>
+  <ul>
+    <li>{{URLS_ARQUIVOS_ESTADOS_AUDITADOS}}</li>
+  </ul>
+  <h3>Motores e versões</h3>
+  <ul>
+    <li>{{MOTOR_1_E_VERSAO_E_COMANDO}}</li>
+    <li>{{MOTOR_2_E_VERSAO_E_COMANDO}}</li>
+  </ul>
+  <h3>Capacidades degradadas nesta auditoria</h3>
+  <ul>
+    <li>{{CAPACIDADE_DEGRADADA_E_O_QUE_FICOU_SEM_VERIFICAR}}</li>
+  </ul>
+  <h3>Como ler a proveniência de cada achado</h3>
+  <ul>
+    <li><span class="selo selo-motor">[motor]</span> saiu de ferramenta determinística; reproduzível pelo comando citado.</li>
+    <li><span class="selo selo-triado">[incomplete → triado]</span> o motor pediu revisão e o julgamento (com justificativa) foi feito na triagem.</li>
+    <li><span class="selo selo-llm">[heurística LLM]</span> julgamento sem motor por trás; <strong>requer confirmação humana</strong>.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="achados">
+  <h2 id="achados">3. Achados <span class="meta">(agrupados por causa-raiz)</span></h2>
+
+  <!-- Repetir este bloco por achado. Ordenar: crítico → sério → moderado → menor. -->
+  <article class="cartao" aria-labelledby="achado-1">
+    <h3 id="achado-1">3.1 {{TITULO_DO_ACHADO}}</h3>
+    <p>
+      <span class="sev sev-critico">{{SEVERIDADE}}</span>
+      <span class="selo selo-motor">{{PROVENIENCIA}}</span>
+    </p>
+    <p><strong>Critério:</strong> WCAG {{SC_NUMERO}} {{SC_NOME_PT}} (nível {{NIVEL}}) ·
+       <strong>NBR 17225:</strong> {{REQUISITO_NBR_APROX}} <span class="meta">(mapeamento autoral aproximado)</span></p>
+    <p><strong>Barreira criada:</strong> {{QUEM_E_BLOQUEADO_E_COMO}}</p>
+    <p><strong>Onde ({{N_OCORRENCIAS}} ocorrência(s)):</strong> <code>{{SELETOR_ARQUIVO_SLIDE_PAGINA}}</code></p>
+    <p><strong>Correção sugerida:</strong></p>
+    <pre><code>{{CODIGO_OU_INSTRUCAO_DO_FIX}}</code></pre>
+  </article>
+
+</section>
+
+<section aria-labelledby="checklist">
+  <h2 id="checklist">4. Checklist manual (o que máquina não decide)</h2>
+  <div class="rolagem">
+  <table>
+    <caption>Status dos 15 itens de verificação humana</caption>
+    <thead>
+      <tr><th scope="col">Item</th><th scope="col">Critério</th><th scope="col">Status</th><th scope="col">Observação</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">{{ITEM}}</th>
+        <td>{{SC}}</td>
+        <td><span class="sev ok">{{PASSOU_REPROVOU_NAO_VERIFICADO}}</span></td>
+        <td>{{OBS_OU_MOTIVO}}</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section aria-labelledby="normas">
+  <h2 id="normas">5. Base normativa (Brasil)</h2>
+  <ul>
+    <li><strong>LBI, Lei 13.146/2015, art. 63:</strong> acessibilidade obrigatória em sites de empresas com sede ou representação no país. {{NOTA_ENFORCEMENT}}</li>
+    <li><strong>ABNT NBR 17225:2025:</strong> norma técnica brasileira de acessibilidade web (base WCAG 2.2).</li>
+    <li><strong>WCAG 2.2 (W3C):</strong> alvo técnico deste relatório, nível AA, na tradução pt-BR autorizada.</li>
+    <li>{{RAMO_GOV_SE_APLICAVEL_EMAG_TCU}}</li>
+  </ul>
+  <p class="meta">Impacto: Censo IBGE 2022 registra 7,9 milhões de pessoas com dificuldade de
+  enxergar (a deficiência mais comum no país); daltonismo atinge cerca de 8% dos homens (est. OMS).</p>
+</section>
+
+<section aria-labelledby="plano">
+  <h2 id="plano">6. Plano de correção priorizado</h2>
+  <div class="rolagem">
+  <table>
+    <caption>Da vitória rápida ao estrutural</caption>
+    <thead>
+      <tr><th scope="col">#</th><th scope="col">Ação</th><th scope="col">Achados que resolve</th><th scope="col">Esforço</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">1</th><td>{{ACAO}}</td><td>{{REFS}}</td><td>{{ESFORCO}}</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>Aviso:</strong> este relatório é uma auditoria assistida por ferramentas automáticas e
+  revisão especializada. <strong>Não constitui laudo, certificação ou parecer jurídico de
+  conformidade.</strong> Conformidade plena com WCAG/NBR 17225 exige verificação humana completa e
+  teste com tecnologia assistiva real e usuários com deficiência.</p>
+  <p>Gerado por <strong>cão-guia</strong> (skill de auditoria de acessibilidade visual) em {{DATA}}.
+  Motores e versões na <a href="#cobertura">seção 2</a>. Threshold de distinguibilidade de cor:
+  ΔE CIE76 &lt; 10 = colisão, 10 a 20 = alerta (decisão declarada da skill).
+  Este relatório passou na própria auditoria (dogfooding): {{RESULTADO_DOGFOODING}}.</p>
+</footer>
+
+</div>
+</body>
+</html>
