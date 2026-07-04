@@ -84,6 +84,8 @@
     background: var(--surface); border: 1px solid var(--border); border-radius: .3rem;
   }
   code { padding: .05rem .3rem; overflow-wrap: anywhere; }
+  /* regiões roláveis precisam ser focáveis (axe scrollable-region-focusable):
+     todo <pre> e toda .rolagem levam tabindex="0" + aria-label no HTML */
   pre { padding: .8rem; overflow-x: auto; }
   footer { margin-top: 3rem; border-top: 2px solid var(--border); padding-top: 1rem; font-size: .95rem; color: var(--muted); }
   @media print {
@@ -177,14 +179,14 @@
     <p><strong>Barreira criada:</strong> {{QUEM_E_BLOQUEADO_E_COMO}}</p>
     <p><strong>Onde ({{N_OCORRENCIAS}} ocorrência(s)):</strong> <code>{{SELETOR_ARQUIVO_SLIDE_PAGINA}}</code></p>
     <p><strong>Correção sugerida:</strong></p>
-    <pre><code>{{CODIGO_OU_INSTRUCAO_DO_FIX}}</code></pre>
+    <pre tabindex="0" role="region" aria-label="Código da correção sugerida"><code>{{CODIGO_OU_INSTRUCAO_DO_FIX}}</code></pre>
   </article>
 
 </section>
 
 <section aria-labelledby="checklist">
   <h2 id="checklist">4. Checklist manual (o que máquina não decide)</h2>
-  <div class="rolagem">
+  <div class="rolagem" tabindex="0" role="region" aria-label="Tabela (rolagem horizontal)">
   <table>
     <caption>Status dos 15 itens de verificação humana</caption>
     <thead>
@@ -216,7 +218,7 @@
 
 <section aria-labelledby="plano">
   <h2 id="plano">6. Plano de correção priorizado</h2>
-  <div class="rolagem">
+  <div class="rolagem" tabindex="0" role="region" aria-label="Tabela (rolagem horizontal)">
   <table>
     <caption>Da vitória rápida ao estrutural</caption>
     <thead>

@@ -37,6 +37,8 @@ python3 scripts/axe_diff.py baseline.json depois.json
 Pegadinhas do axe-cli (aprendidas na prática):
 - **Arquivo local**: passar URL `file:///caminho/absoluto.html`; caminho relativo vira `http://` e falha com ERR_NAME_NOT_RESOLVED.
 - **ChromeDriver × Chrome dessincronizados** (erro "only supports Chrome version N"): rodar `npx browser-driver-manager install chrome` (instala o par casado em `~/.browser-driver-manager/`, sem tocar no Chrome do sistema) e passar `--chrome-path`/`--chromedriver-path` com os caminhos que ele imprime.
+- **Extensão não-`.html`** (backups `.bak`, cópias): o Chrome serve como texto puro e o axe audita um DOM sintetizado vazio, gerando falsos achados (`document-title`). Auditar sempre uma cópia byte-idêntica renomeada para `.html` (conferir hash) e declarar isso na cobertura.
+- **Auditoria nunca modifica o alvo**: em material de cliente, registrar hash antes/depois como prova.
 
 ## Buckets do axe (tratar diferente, nunca misturar)
 
