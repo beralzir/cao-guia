@@ -4,7 +4,7 @@ Skill do Claude Code que **valida, verifica, sugere, ajusta e audita acessibilid
 
 O nome diz o método: guiar o material até ficar acessível, no modelo social (a barreira está no material, nunca na pessoa).
 
-## O que ela cobre (V1)
+## O que ela cobre
 
 | Entrada | Motor |
 |---|---|
@@ -12,15 +12,14 @@ O nome diz o método: guiar o material até ficar acessível, no modelo social (
 | Documentos: PDF, docx, pptx, xlsx | veraPDF/Matterhorn + checks OOXML próprios |
 | Data viz, paletas e peças estáticas | pipeline próprio de cor (contraste WCAG + simulação de daltonismo Machado 2009 + veredito ΔE) |
 
-Declarado como V2 (ainda não coberto): mobile nativo, vídeo/audiodescrição, EPUB, e-mail HTML.
+Fora de escopo: mobile nativo, vídeo/audiodescrição, EPUB e e-mail HTML.
 
 ## O que a diferencia
 
 - **Motor primeiro, LLM depois**: todo achado carrega proveniência (`[motor]`, `[incomplete → triado]`, `[heurística LLM]`).
 - **Honestidade de cobertura**: o relatório declara que varredura automática cobre só ~30-40% dos critérios WCAG e lista o que não foi verificado.
 - **Brasil por default**: LBI art. 63, ABNT NBR 17225:2025 (mapeamento autoral), WCAG 2.2 pt-BR, ramo eMAG para `.gov.br`, números do IBGE com fonte e ano.
-- **Correção com prova**: diagnóstico → lote aprovado → aplicar → re-scan com diff vs. baseline (`scripts/axe_diff.py`). Gate duro em cor de marca e mudança estrutural.
-- **Dogfooding**: o relatório HTML gerado precisa passar na própria auditoria antes de ser entregue.
+- **Correção com prova**: diagnóstico → lote aprovado → aplicar → re-scan com diff vs. baseline. Gate duro em cor de marca e mudança estrutural.
 - **Não emite laudo**: auditoria assistida com disclaimer fixo; certificação de conformidade não existe aqui.
 
 ## Como invocar
@@ -52,7 +51,7 @@ pip install daltonlens pillow                   # CVD avançado + imagem raster
 
 - `SKILL.md`: fluxo, modos (auditar/sugerir/ajustar), escopo e regras.
 - `references/`: motores e roteamento, normas BR, cor/daltonismo, documentos, checklist manual, contrato do relatório.
-- `scripts/`: `preflight.py`, `cor.py` (contraste WCAG + paleta sob CVD), `office_audit.py`, `axe_diff.py`.
+- `scripts/`: utilitários de apoio (preflight de ambiente, cor/contraste, auditoria de documentos Office, diff de re-scan).
 - `assets/template-relatorio.html`: template do relatório acessível (claro/escuro/print, zero JS).
 
 ## Licença
