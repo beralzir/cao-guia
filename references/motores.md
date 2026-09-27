@@ -31,8 +31,11 @@ npx @axe-core/cli@4.12.1 <url> --tags wcag2a,wcag2aa,wcag21aa,wcag22aa --save ax
 # segundo motor (IBM Equal Access pinado; regras genuinamente diferentes; aceita diretório de HTML local)
 npx -y -p accessibility-checker@4.0.26 achecker <url-ou-diretório>
 
-# par Chrome/driver casado, pinado (setup pontual, não mexe no Chrome do sistema)
-npx browser-driver-manager@2.0.1 install chrome   # par testado: Chrome for Testing 150.0.7871.46
+# par Chrome/driver casado, pinado (setup pontual, não mexe no Chrome do sistema).
+# O pin é da ferramenta: ela baixa o Chrome for Testing estável do dia.
+# Pares testados: 150.0.7871.46 (evals, 07/2026) e 154.0.8037.57 (27/09/2026, 3/3 erros plantados).
+npx browser-driver-manager@2.0.1 install chrome
+python3 scripts/preflight.py   # confere se o par executa e imprime --chrome-path/--chromedriver-path
 
 # multi-página: loop simples sobre lista de URLs com limite declarado (default 10)
 # PDF/UA
@@ -44,7 +47,20 @@ python3 scripts/axe_diff.py baseline.json depois.json
 
 Pegadinhas do axe-cli (aprendidas na prática):
 - **Arquivo local**: passar URL `file:///caminho/absoluto.html`; caminho relativo vira `http://` e falha com ERR_NAME_NOT_RESOLVED.
-- **ChromeDriver × Chrome dessincronizados** (erro "only supports Chrome version N"): rodar `npx browser-driver-manager@2.0.1 install chrome` (mesma versão pinada do bloco acima; instala o par casado em `~/.browser-driver-manager/`, sem tocar no Chrome do sistema) e passar `--chrome-path`/`--chromedriver-path` com os caminhos que ele imprime.
+- **ChromeDriver × Chrome dessincronizados** (erro "only supports Chrome version N"): rodar `npx browser-driver-manager@2.0.1 install chrome` (mesma versão pinada do bloco acima; instala o par casado em `~/.browser-driver-manager/`, sem tocar no Chrome do sistema) e passar `--chrome-path`/`--chromedriver-path` com os caminhos que o `scripts/preflight.py` mostra (o bdm não imprime nada quando roda sem terminal).
+- **Extração truncada (visto com Node 26, em 27/09/2026)**: o `browser-driver-manager@2.0.1`, e o `@puppeteer/browsers` que ele usa por baixo, saem com código 0 no meio da extração e sem mensagem. Ficam o Chrome for Testing sem o framework e o driver sem o binário, e o axe cai com `spawn ... chromedriver ENOENT`. O preflight acusa `QUEBRADO`. Contorno com a mesma versão pinada: mover a pasta quebrada para fora (com a pasta presente, o instalador considera a versão instalada), baixar os zips oficiais e extrair com a ferramenta do sistema, no mesmo layout:
+
+  ```bash
+  V=154.0.8037.57; P=mac-arm64; D=mac_arm-$V   # Linux: P=linux64, D=linux-$V
+  U=https://storage.googleapis.com/chrome-for-testing-public/$V/$P
+  for k in chrome chromedriver; do
+    curl -fsSL -o "/tmp/$k-$P.zip" "$U/$k-$P.zip"
+    mkdir -p ~/.browser-driver-manager/$k/$D
+    ditto -x -k "/tmp/$k-$P.zip" ~/.browser-driver-manager/$k/$D   # Linux: unzip -q -d
+  done
+  ```
+
+  O aviso `code has no resources but signature indicates they must be present` do `codesign` é normal no Chrome for Testing (o do Playwright dá o mesmo). O teste que vale é o `--version` responder, e é o que o preflight faz.
 - **Extensão não-`.html`** (backups `.bak`, cópias): o Chrome serve como texto puro e o axe audita um DOM sintetizado vazio, gerando falsos achados (`document-title`). Auditar sempre uma cópia byte-idêntica renomeada para `.html` (conferir hash) e declarar isso na cobertura.
 - **Auditoria nunca modifica o alvo**: em material de cliente, registrar hash antes/depois como prova.
 
