@@ -63,6 +63,34 @@ Pegadinhas do axe-cli (aprendidas na prática):
   O aviso `code has no resources but signature indicates they must be present` do `codesign` é normal no Chrome for Testing (o do Playwright dá o mesmo). O teste que vale é o `--version` responder, e é o que o preflight faz.
 - **Extensão não-`.html`** (backups `.bak`, cópias): o Chrome serve como texto puro e o axe audita um DOM sintetizado vazio, gerando falsos achados (`document-title`). Auditar sempre uma cópia byte-idêntica renomeada para `.html` (conferir hash) e declarar isso na cobertura.
 - **Auditoria nunca modifica o alvo**: em material de cliente, registrar hash antes/depois como prova.
+- **Largura e tema da página (visto em 01/10/2026)**: o `--chrome-options` do cli corta a lista na vírgula, então `window-size=W,H` não passa, e com `screen-info` a janela do Chrome não desce de 500 px. Sem nada fixado, o axe mede a janela padrão do headless (756×413 no teste) no tema do sistema: num macOS em modo escuro, só o tema escuro. O tema o cli fixa, com `--chrome-options "blink-settings=preferredColorScheme=1"` (claro) ou `=0` (escuro). A largura (320, 390, 1366 px) só sai emulando a viewport, com o Playwright do preflight e o `axe.min.js` 4.12.1 que o npx já baixou. A receita também acusa rolagem horizontal da página, que o axe não mede:
+
+```bash
+python3 - arquivo.html <<'EOF'
+import glob, json, os, sys
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+pacotes = glob.glob(os.path.expanduser("~/.npm/_npx/*/node_modules/axe-core/package.json"))
+axe = next((os.path.join(os.path.dirname(p), "axe.min.js") for p in pacotes if json.load(open(p))["version"] == "4.12.1"), None)
+if axe is None:
+    sys.exit("axe-core 4.12.1 fora do cache do npx: rodar npx @axe-core/cli@4.12.1 uma vez antes")
+tags = ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa", "best-practice"]
+with sync_playwright() as p:
+    nav = p.chromium.launch()
+    for largura in (1366, 390, 320):
+        for tema in ("light", "dark"):
+            pag = nav.new_page(viewport={"width": largura, "height": 900}, color_scheme=tema)
+            pag.goto(Path(sys.argv[1]).resolve().as_uri())
+            pag.add_script_tag(path=axe)
+            r = pag.evaluate("t => axe.run({runOnly: {type: 'tag', values: t}})", tags)
+            rola = pag.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
+            escuro = pag.evaluate("matchMedia('(prefers-color-scheme: dark)').matches")
+            print(largura, "escuro" if escuro else "claro", r["testEngine"]["version"],
+                  [v["id"] for v in r["violations"]] or "0 violações", "· ROLA NA HORIZONTAL" if rola else "")
+            pag.close()
+    nav.close()
+EOF
+```
 
 ## Buckets do axe (tratar diferente, nunca misturar)
 
