@@ -39,9 +39,13 @@
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
+  /* palavra longa (caminho, URL, comando, hash) quebra em vez de estourar a 320 px (SC 1.4.10).
+     break-word, e não anywhere, para as tabelas manterem a largura natural e rolarem na .rolagem.
+     break-word não encolhe caixa inline-block: por isso o .veredito leva max-width: 100%. */
   body {
     margin: 0; background: var(--bg); color: var(--ink);
     font: 400 1.125rem/1.6 "Atkinson Hyperlegible", "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+    overflow-wrap: break-word;
   }
   .pele { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
   a { color: var(--accent); }
@@ -57,7 +61,7 @@
   p, li { max-width: 65ch; }
   .meta { color: var(--muted); font-size: .95rem; margin: 0; }
   .veredito {
-    display: inline-block; margin: 1rem 0 0; padding: .35rem .8rem; border: 2px solid var(--ink);
+    display: inline-block; max-width: 100%; margin: 1rem 0 0; padding: .35rem .8rem; border: 2px solid var(--ink);
     border-radius: .35rem; font-weight: 700; background: var(--surface);
   }
   nav[aria-label="Sumário"] ul { margin: .4rem 0 0; padding-left: 1.2rem; }
